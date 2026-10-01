@@ -1,15 +1,17 @@
 # Moviebox Premium App — option affiliée
 
-Application de redirection affiliée vers MovieBox, sans héberger, revendre ou débloquer de films.
+Application de découverte et de redirection affiliée. Elle ne fournit pas de films, de liens de streaming, de téléchargements ni de paiement MovieBox dans sa propre infrastructure.
 
-## Fonctionnement
+## Fonctionnalités
 
-- Le catalogue et les fiches peuvent utiliser une source autorisée comme TMDb.
-- Le bouton **Accéder à MovieBox** redirige vers le site officiel avec ton lien affilié.
-- Les paiements et abonnements sont réalisés directement par MovieBox.
-- L'application ne collecte pas de paiement pour MovieBox et ne fournit aucun lien de téléchargement ou de streaming non autorisé.
+- Landing page responsive en français
+- Redirection vers le lien affilié officiel (`/go/moviebox`)
+- Paramètres UTM ajoutés automatiquement
+- Catalogue informatif TMDb optionnel (`/api/catalog/search`)
+- Documentation FastAPI (`/docs`)
+- Endpoint de santé (`/health`)
 
-## Installation
+## Lancer en local
 
 ```bash
 cd backend
@@ -20,17 +22,22 @@ cp .env.example .env
 uvicorn app:app --reload
 ```
 
-Ouvre ensuite http://127.0.0.1:8000.
+Ouvre http://127.0.0.1:8000.
 
 ## Configuration
 
-Dans `.env`, remplace `MOVIEBOX_AFFILIATE_URL` uniquement par une URL fournie par le programme affilié officiel MovieBox. Ne mets jamais une clé secrète dans le dépôt.
-
 ```env
-MOVIEBOX_AFFILIATE_URL=https://moviebox.ph/
+MOVIEBOX_AFFILIATE_URL=https://moviebox.ph/?ref=TON_IDENTIFIANT
+TMDB_API_KEY=ta_cle_tmdb_optionnelle
 APP_NAME=Moviebox Premium App
 ```
 
-## Important
+Utilise uniquement un lien fourni par le programme d’affiliation officiel. Le paiement Stripe n’est pas intégré à cette option : MovieBox encaisse directement les abonnements. Stripe ne peut être ajouté pour vendre l’accès à MovieBox qu’avec une autorisation contractuelle explicite de MovieBox et les droits de distribution nécessaires.
 
-Tu dois obtenir l'autorisation écrite de MovieBox avant d'utiliser leur marque, leur catalogue ou de recevoir une commission. Vérifie également les conditions du programme affilié et les obligations de divulgation publicitaire applicables dans ton pays.
+## Déploiement
+
+Sur Render, Railway ou Fly.io : configure le dossier de démarrage `backend`, la commande `uvicorn app:app --host 0.0.0.0 --port $PORT`, puis ajoute les variables d’environnement dans le tableau de bord. Ne committe jamais `.env` ou une clé TMDb.
+
+## Conformité
+
+Obtiens une autorisation écrite avant d’utiliser la marque, le catalogue ou les visuels MovieBox. Ajoute une politique de confidentialité, une divulgation d’affiliation et respecte les lois applicables dans les pays ciblés.

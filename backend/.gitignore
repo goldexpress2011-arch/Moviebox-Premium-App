@@ -1,0 +1,5 @@
+# Ne jamais committer le fichier .env réel.
+.env
+.venv/
+__pycache__/
+*.pyc

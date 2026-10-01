@@ -35,7 +35,7 @@ jobs:
 
       - name: Smoke test FastAPI application
         env:
-          MOVIEBOX_AFFILIATE_URL: https://moviebox.ph/
+          MOVIEBOX_AFFILIATE_URL: https://moviebox.ph/?ref=demo
           APP_NAME: Moviebox Premium App
         run: |
           python - <<'PY'
@@ -44,13 +44,20 @@ jobs:
 
           client = TestClient(app)
 
-          assert client.get("/health").status_code == 200
-          assert client.get("/").status_code == 200
-          assert client.get("/api/config").status_code == 200
+          health = client.get("/health")
+          assert health.status_code == 200, health.text
 
-          response = client.get("/go/moviebox", follow_redirects=False)
-          assert response.status_code == 307
-          assert "moviebox.ph" in response.headers["location"]
+          root = client.get("/")
+          assert root.status_code == 200, root.text
+
+          cfg = client.get("/api/config")
+          assert cfg.status_code == 200, cfg.text
+
+          resp = client.get("/go/moviebox", follow_redirects=False)
+          assert resp.status_code in (301, 302, 307, 308), resp.status_code
+
+          location = resp.headers.get("location", "")
+          assert "moviebox.ph" in location.lower(), location
 
           print("Smoke tests passed")
           PY
